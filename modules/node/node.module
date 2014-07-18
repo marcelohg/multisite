@@ -1,6 +1,6 @@
 <?php
 
-/**
+/*
  * @file
  * The core that allows content to be submitted to the site. Modules and
  * scripts may programmatically submit nodes using the usual form API pattern.
