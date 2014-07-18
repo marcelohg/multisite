@@ -1010,6 +1010,7 @@ function drupal_find_base_themes($themes, $key, $used_keys = array()) {
  * @see template_process()
  */
 function theme($hook, $variables = array()) {
+#return;
   // If called before all modules are loaded, we do not necessarily have a full
   // theme registry to work with, and therefore cannot process the theme
   // request properly. See also _theme_load_registry().
@@ -1203,6 +1204,41 @@ function theme($hook, $variables = array()) {
 
   // restore path_to_theme()
   $theme_path = $temp;
+#$output='';
+#var_export($variables);
+#echo '<hr>';
+
+/*
+
+        #NASAJON
+        $contente_restrict_arrnode=(array)$variables['node'];
+        if(isset($contente_restrict_arrnode['field_contentaccess_roles']))
+        {
+                $contente_restrict_authorized_roles = array();
+                foreach($contente_restrict_arrnode['field_contentaccess_roles']['und'] as $authorizedrole)
+                {
+                        array_push($contente_restrict_authorized_roles,$authorizedrole['rid']);
+                }
+                if(isset($GLOBALS['user']))
+                {
+                        $user=(array)$GLOBALS['user'];
+                        $contente_restrict_roles = array_keys($user['roles']);
+                        ##var_export($contente_restrict_roles);
+                        ##var_export($arrauth);
+                        if( ! array_intersect($contente_restrict_roles, $contente_restrict_authorized_roles)){
+                                $output='';
+                        }
+                }
+                else
+                {
+                        $output='';
+                }
+        }
+
+*/
+
+
+
   return $output;
 }
 

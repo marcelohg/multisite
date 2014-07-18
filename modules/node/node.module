@@ -942,9 +942,50 @@ function node_invoke($node, $hook, $a2 = NULL, $a3 = NULL, $a4 = NULL) {
  *
  * @todo Remove $conditions in Drupal 8.
  */
+#function node_load_multiple($nids = array(), $conditions = array(), $reset = FALSE) {
+#  return entity_load('node', $nids, $conditions, $reset);
+#}
 function node_load_multiple($nids = array(), $conditions = array(), $reset = FALSE) {
-  return entity_load('node', $nids, $conditions, $reset);
+#NASAJON
+  $out = array();
+  
+  $nodes = entity_load('node', $nids, $conditions, $reset);
+  
+	foreach ($nodes as $nid=>$node)
+	{
+		if(property_exists ($node,'field_contentaccess_roles'))
+		{
+			if(is_array($node->field_contentaccess_roles) && ! empty($node->field_contentaccess_roles))
+			{
+				$contente_restrict_authorized_roles = array();
+				foreach($node->field_contentaccess_roles['und'] as $authorizedrole)
+				{
+					array_push($contente_restrict_authorized_roles,$authorizedrole['rid']);
+				}
+			    if(isset($GLOBALS['user']))
+			    {
+			        $user=(array)$GLOBALS['user'];
+			        $contente_restrict_roles = array_keys($user['roles']);
+			        if(array_intersect($contente_restrict_roles, $contente_restrict_authorized_roles))
+			        {
+			           $out[$nid]=$node;
+			        }
+			    }
+			}
+			else
+			{
+				$out[$nid]=$node;
+			}
+		}
+		else
+		{
+			$out[$nid]=$node;
+		}
+	}
+  
+  return $out;
 }
+
 
 /**
  * Loads a node object from the database.
@@ -1563,6 +1604,7 @@ function template_preprocess_node(&$variables) {
   // Clean up name so there are no underscores.
   $variables['theme_hook_suggestions'][] = 'node__' . $node->type;
   $variables['theme_hook_suggestions'][] = 'node__' . $node->nid;
+
 }
 
 /**
